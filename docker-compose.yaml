@@ -1,0 +1,68 @@
+services:
+  db:
+    container_name: postgres_jota
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: jota
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5440:5432"
+    restart: always
+
+  rabbitmq:
+    container_name: rabbitmq_jota
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    restart: always
+
+  app:
+    container_name: jota_app
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - media_volume:/app/media
+    env_file:
+      - .env
+    command: ["sh", "entrypoint.sh"]
+    depends_on:
+      - db
+      - rabbitmq
+    restart: always
+
+  celery:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    command: ["celery", "-A", "JOTA.celery_settings", "worker", "--loglevel=info"]
+    depends_on:
+      - db
+      - rabbitmq
+    restart: always
+
+  celery_beat:
+    build: .
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    command: ["celery", "-A", "JOTA.celery_settings", "beat", "--loglevel=info"]
+    depends_on:
+      - db
+      - rabbitmq
+    restart: always
+
+volumes:
+  postgres_data:
+  media_volume:

@@ -3,12 +3,13 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 
+from accounts.custom_permissions import IsAdminPermission
 from accounts.serializers import UserSerializer
 
 
 class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminPermission]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

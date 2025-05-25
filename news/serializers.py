@@ -24,6 +24,7 @@ class NewsSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['author'] = self.context['request'].user
+        validated_data["published_at"] = timezone.now() if validated_data.get("status") == News.Status.PUBLISHED else None
         return super().create(validated_data)
 
     def to_representation(self, instance):

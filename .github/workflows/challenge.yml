@@ -1,4 +1,4 @@
-name: JOTA challenge
+name: JOTA challenge PIPELINE
 on:
   push:
     branches:

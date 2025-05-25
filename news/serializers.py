@@ -6,7 +6,7 @@ from news.models import News
 
 
 class NewsSerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=True, allow_null=False)
+    image = serializers.ImageField(required=False, allow_null=True)
     class Meta:
         model = News
         exclude = ['created_at', 'updated_at']

@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from news import views
 
 router = DefaultRouter()
-router.register(r'', views.CreateListRetrieveViewSet, basename='news-publisher')
+router.register(r'', views.CreateListRetrieveViewSet, basename='news')
 
 urlpatterns = [
     # Include the router's URLs

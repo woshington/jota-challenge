@@ -2,12 +2,14 @@
 
 from django.db.models import Q
 from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, mixins
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from accounts.custom_permissions import IsPublisherPermission, IsAdminPermission
+from news.filters import NewsFilter
 from news.models import News
 from news.serializers import NewsSerializer
 
@@ -23,6 +25,8 @@ class CreateListRetrieveViewSet(mixins.CreateModelMixin,
     queryset = News.objects.all()
     serializer_class = NewsSerializer
     permission_classes = [IsPublisherPermission | IsAdminPermission]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = NewsFilter
 
     def get_permissions(self):
         """

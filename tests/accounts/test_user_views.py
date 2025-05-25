@@ -25,6 +25,7 @@ class TestUserViews(APITestCase):
             password='testpass',
             role=CustomUser.READER,
             email='testemail_reader@gmail.com',
+            plan=Plan.objects.get(name='JOTA Info')
         )
 
     def test_user_registration_admin_success(self):
@@ -84,3 +85,22 @@ class TestUserViews(APITestCase):
         }
         response = self.client.post('/api/v1/accounts/register/', data)
         self.assertEqual(response.status_code, 201)
+
+    def test_user_me_info(self):
+        self.client.force_authenticate(user=self.user_reader)
+        response = self.client.get('/api/v1/accounts/me/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['username'], self.user_reader.username)
+        self.assertEqual(response.data['email'], self.user_reader.email)
+        self.assertEqual(response.data['role'], CustomUser.READER)
+        self.assertEqual(response.data['plan'], self.user_reader.plan_id)
+
+    def test_user_me_update(self):
+        self.client.force_authenticate(user=self.user_reader)
+        response = self.client.patch('/api/v1/accounts/me/', data={"username": "updated_username"})
+        self.assertEqual(response.status_code, 200)
+        self.user_reader.refresh_from_db()
+        self.assertEqual(response.data['username'], "updated_username")
+        self.assertEqual(response.data['email'], self.user_reader.email)
+        self.assertEqual(response.data['role'], CustomUser.READER)
+        self.assertEqual(response.data['plan'], self.user_reader.plan_id)

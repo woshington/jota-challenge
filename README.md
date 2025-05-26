@@ -13,6 +13,7 @@ Este projeto utiliza **Docker Compose** para orquestrar os seguintes serviços:
 
 ---
 
+
 ### ✅ Pré-requisitos
 
 - [Docker](https://docs.docker.com/get-docker/) instalado
@@ -20,11 +21,14 @@ Este projeto utiliza **Docker Compose** para orquestrar os seguintes serviços:
 
 ---
 
+### ⚙️ Passos para execução
+
+1. Configure o arquivo `.env` conforme o exemplo abaixo.
 ### 📄 Exemplo de `.env`
 
 ```env
 SECRET_KEY=super-secret-key
-DEBUG=False
+DEBUG=True
 DJANGO_SETTINGS_MODULE=JOTA.settings
 DB_NAME=jota
 DB_USER=postgres
@@ -38,6 +42,24 @@ RABBITMQ_HOST=rabbitmq_jota
 
 ---
 
+2. Execute o comando:
+
+```bash
+docker compose up
+```
+
+> Este comando irá subir todos os serviços necessários: banco de dados, mensageria, aplicação, worker e agendador.
+
+3. Após o container da aplicação estar rodando, acesse o shell dentro do container Django e crie um superusuário com o comando:
+
+```bash
+docker compose exec app python manage.py createsuperuser
+```
+
+> Este usuário admin será necessário para acessar o painel administrativo e gerenciar o sistema.
+
+---
+
 # 📖 Documentação da API JOTA
 
 A **JOTA API** oferece endpoints RESTful para autenticação, gerenciamento de usuários, planos, verticais e notícias. A API utiliza autenticação JWT para segurança.
@@ -45,8 +67,6 @@ A **JOTA API** oferece endpoints RESTful para autenticação, gerenciamento de u
 - **Base URL:** `http://127.0.0.1:8000/api/v1/`
 - **Versão:** v1
 - **Licença:** BSD License
-- **Contato:** [contato@jota.com](mailto:contato@jota.com)
-- **Termos de Serviço:** [Política de Termos](https://www.google.com/policies/terms/)
 
 ---
 
